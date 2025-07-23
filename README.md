@@ -1,4 +1,4 @@
-# Navisworks Clash Data Exporter & Power BI Reporting
+# Navisworks Clash Data Exporter & Power BI Reporting - **2025 Edition**
 
 The ultimate goal of these tools and workflow is to improve MEP BIM coordination communication with project teams.  The Navisworks add-in provides a means to automate clash metrics progress reporting,  visualize clash data, and make model data meaningful and accessible for various project stakeholders. This workflow requires Autodesk Navisworks Manage, Microsoft Power BI, and Navisworks API to access the desired Clash Detective data for exporting.  The tools and workflow are designed to have Navisworks Manage coupled with Microsoft Power BI to deliver multiple interactive visual reports in Power BI.  However, this respository focuses on the Navisworks API add-in.  The included Power BI template is only for reference and testing.
 
@@ -6,10 +6,10 @@ The ultimate goal of these tools and workflow is to improve MEP BIM coordination
 Environment setup regarding application development logistics.
 
 * IDE:
-  * Visual Studio 2019
+  * Visual Studio 2019 or later
   
 * Framework:
-  * .NET Framework 4.7.2
+  * .NET Framework 4.8
 
 * Language:
   * C#
@@ -30,7 +30,7 @@ Environment setup regarding application development logistics.
 Application features and specs for Navisworks Manage add-in
 
 * Software Required
-  - Navisworks Manage 2019
+  - **Navisworks Manage 2025**
   - Microsoft Power BI
   
 * Navisworks Model Preparation & Clash Detective Setup Requirements
@@ -114,18 +114,64 @@ Below highlights specific API features implemented to access and export specific
   <img src="https://user-images.githubusercontent.com/44215479/75585302-9ac3c600-5a26-11ea-950d-f41adfa4aa90.png" width="400">
 </p>
 
-## Installing and Running Application
-1. Clone or download project. </br>
-2. Open ClashData.sln in Visual Studio 2019. </br>
-3. Ensure that the library packages stated in Getting Started are installed and referenced. </br>
-4. The application can then be run in debug mode. </br>
-5. Go to Debug/Release location and copy the files and folder below. </br>
-   <p align = "center">
-      <img src="https://user-images.githubusercontent.com/44215479/75586032-50434900-5a28-11ea-9cb2-8e3d00008d17.png" width = "200">
-   </p>
-6. Create a ClashData folder in **Local_Drive:\...\Autodesk\Navisworks Manage 2019\Plugins** </br>
-7. Paste copied files and folders to ClashData folder </br>
-8. Open Navisworks Manage 2019 to execute and test add-in.
+## Installing and Running Application for Navisworks 2025
+
+### Prerequisites
+1. **Navisworks Manage 2025** installed
+2. **Visual Studio 2019 or later** (for compilation)
+3. **.NET Framework 4.8** (typically included with Navisworks 2025)
+
+### Step 1: Obtain Required DLLs
+Copy the following DLL files from your **Navisworks 2025 installation** to the `References/2025/` folder:
+
+```
+From: C:\Program Files\Autodesk\Navisworks Manage 2025\
+Copy: 
+  - Autodesk.Navisworks.Api.dll
+  - Autodesk.Navisworks.Automation.dll
+  - Autodesk.Navisworks.Clash.dll
+  - navisworks.gui.roamer.dll
+  - AdWindows.dll
+
+To: [ProjectFolder]\References\2025\
+```
+
+### Step 2: Compile the Project
+1. Open `ClashData.sln` in Visual Studio
+2. Ensure all references are resolved (you should see the DLLs in the References folder)
+3. Build the solution (Build → Build Solution or Ctrl+Shift+B)
+4. Navigate to `bin\Debug\` or `bin\Release\` depending on your build configuration
+
+### Step 3: Deploy to Navisworks
+1. Copy the following files/folders from your build output directory:
+   ```
+   ClashData.dll
+   en-US/ (folder)
+   Images/ (folder)  
+   Resources/ (folder)
+   ```
+
+2. Create a folder named `ClashData` in your Navisworks 2025 plugins directory:
+   ```
+   C:\Program Files\Autodesk\Navisworks Manage 2025\Plugins\ClashData\
+   ```
+
+3. Paste the copied files into the `ClashData` folder
+
+### Step 4: Test the Installation
+1. Open **Navisworks Manage 2025**
+2. Look for the "Export Clash Data" button in the **VDC Add-ins** ribbon tab
+3. Load a model with clash data and test the export functionality
+
+### Alternative Deployment (Manual Installation)
+If you don't have Visual Studio, you can:
+1. Obtain the compiled DLL from someone who has built it
+2. Follow steps 3-4 above for deployment
+
+### Troubleshooting
+- **Missing References**: Ensure all DLLs are copied to `References/2025/`
+- **Plugin Not Loading**: Check that .NET Framework 4.8 is installed
+- **Access Denied**: Ensure you have administrative rights when copying to Program Files
 
 ## References for Further Learning
 - Tools and Workflow described here are based on AU 2019 Presentation: [Visualizing Clash Metrics in Navisworks with Power BI - Carlo Caparas](https://www.autodesk.com/autodesk-university/class/Its-All-Data-Visualizing-Clash-Metrics-Navisworks-and-Power-BI-2019)
@@ -135,3 +181,4 @@ Below highlights specific API features implemented to access and export specific
 - [API Docs - Guilherme Talarico](https://apidocs.co/apps/navisworks/2018/87317537-2911-4c08-b492-6496c82b3ed1.htm#)
 - [Power BI Documentation - Microsoft Corporation](https://docs.microsoft.com/en-us/power-bi/#pivot=home&panel=home-all)
 
+# Auto-build status: Wed Jul 23 16:57:39 CEST 2025

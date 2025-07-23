@@ -1,0 +1,74 @@
+name: Build Navisworks 2025 Plugin
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET Framework
+      uses: microsoft/setup-msbuild@v1.3
+      
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+      
+    - name: Check for required DLLs
+      run: |
+        if (!(Test-Path "References\2025\Autodesk.Navisworks.Api.dll")) {
+          Write-Warning "Navisworks 2025 DLLs not found in References\2025\"
+          Write-Warning "This build will fail without the required Navisworks DLLs"
+          Write-Warning "Please add the DLLs from a Navisworks 2025 installation"
+          exit 1
+        }
+      shell: powershell
+      
+    - name: Restore NuGet packages
+      run: nuget restore ClashData.sln
+      
+    - name: Build solution
+      run: msbuild ClashData.sln /p:Configuration=Release /p:Platform="Any CPU" /p:WarningLevel=0
+      
+    - name: Prepare artifacts
+      run: |
+        mkdir build-output
+        copy "ClashData\bin\Release\ClashData.dll" "build-output\"
+        if (Test-Path "ClashData\bin\Release\en-US") {
+          xcopy "ClashData\bin\Release\en-US" "build-output\en-US\" /E /I
+        }
+        if (Test-Path "ClashData\bin\Release\Images") {
+          xcopy "ClashData\bin\Release\Images" "build-output\Images\" /E /I  
+        }
+        if (Test-Path "ClashData\bin\Release\Resources") {
+          xcopy "ClashData\bin\Release\Resources" "build-output\Resources\" /E /I
+        }
+      shell: powershell
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: navisworks-2025-clash-exporter
+        path: build-output/
+        retention-days: 30
+        
+    - name: Create deployment package
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      run: |
+        Compress-Archive -Path "build-output\*" -DestinationPath "Navisworks-2025-Clash-Exporter.zip"
+      shell: powershell
+      
+    - name: Upload deployment package
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-package
+        path: Navisworks-2025-Clash-Exporter.zip
+        retention-days: 90 

@@ -18,7 +18,7 @@ using Autodesk.Navisworks.Api.Automation;
 using Autodesk.Navisworks.Api.Plugins;
 using ClashData;
 
-//-----For Navisworks 2019-----//
+//-----For Navisworks 2025-----//
 namespace StartView //Created by Carlo Caparas
 {
     [PluginAttribute("StartView.Start",    //Namespace.Starting class of the plugin (where the override function is)
